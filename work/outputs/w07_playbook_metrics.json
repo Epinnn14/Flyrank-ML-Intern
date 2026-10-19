@@ -1,0 +1,47 @@
+{
+  "model": "LogisticRegression (window-aligned features, see w06 + capstone)",
+  "fold_precision_at_50": [
+    0.82,
+    0.9,
+    0.74,
+    0.84,
+    0.92
+  ],
+  "validation": "GroupKFold(5) by client_id, out-of-fold",
+  "base_rate": 0.5421,
+  "backtest_precision_at_50": 0.88,
+  "backtest_precision_at_200": 0.84,
+  "action_mix": {
+    "monitor": 14715,
+    "protect": 6747,
+    "refresh_now": 3991,
+    "rewrite_title_and_meta": 2212,
+    "light_refresh_or_monitor": 1366,
+    "consolidate_or_prune_review": 849,
+    "expand_and_refresh": 120
+  },
+  "reason_code_counts": {
+    "already_slipping": 16315,
+    "decay_age_zone": 13198,
+    "demand_still_there": 11557,
+    "high_model_risk": 6000,
+    "thin_page": 4753,
+    "snippet_underperforms": 3780,
+    "near_zero_demand": 849
+  },
+  "decay_by_age": {
+    "90-180": 0.6273,
+    "181-270": 0.5897,
+    "271-365": 0.4701,
+    "366-540": 0.4194,
+    "541+": 0.5782
+  },
+  "retrain_triggers": {
+    "queue_precision_floor": "precision@50 of last month's queue (once outcomes arrive) < base rate + 0.05 for 2 months in a row",
+    "base_rate_shift": "monthly share of declining pages moves > 10 points vs training (0.54)",
+    "feature_drift": "PSI > 0.25 on any monitored traffic feature (age excluded: it shifts by design)",
+    "new_client": "a client with no history in training -> score separately, review 100% of its first queue",
+    "search_event": "a known search-engine core update or tracking change -> pause queue, re-validate before use",
+    "schedule": "retrain monthly on the newest 90-day window; re-run w06 audit before replacing the model"
+  }
+}

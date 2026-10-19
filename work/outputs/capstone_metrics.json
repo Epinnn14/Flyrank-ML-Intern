@@ -1,0 +1,46 @@
+{
+  "base_rate": 0.5444,
+  "table": [
+    {
+      "method": "random_order",
+      "roc_auc": 0.506,
+      "avg_precision": 0.55,
+      "precision_at_50": 0.5,
+      "precision_at_100": 0.524,
+      "roc_auc_sd": 0.012
+    },
+    {
+      "method": "rule_week4",
+      "roc_auc": 0.503,
+      "avg_precision": 0.553,
+      "precision_at_50": 0.444,
+      "precision_at_100": 0.442,
+      "roc_auc_sd": 0.059
+    },
+    {
+      "method": "rule_momentum",
+      "roc_auc": 0.483,
+      "avg_precision": 0.519,
+      "precision_at_50": 0.192,
+      "precision_at_100": 0.276,
+      "roc_auc_sd": 0.057
+    },
+    {
+      "method": "logistic_regression",
+      "roc_auc": 0.696,
+      "avg_precision": 0.704,
+      "precision_at_50": 0.844,
+      "precision_at_100": 0.824,
+      "roc_auc_sd": 0.083
+    },
+    {
+      "method": "random_forest",
+      "roc_auc": 0.685,
+      "avg_precision": 0.677,
+      "precision_at_50": 0.648,
+      "precision_at_100": 0.684,
+      "roc_auc_sd": 0.079
+    }
+  ],
+  "validation": "GroupKFold(5) by client_id, window-aligned features (days 31-90 back)"
+}

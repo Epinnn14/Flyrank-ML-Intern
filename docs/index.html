@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Which Pages Will Lose Search Traffic Next? A Review-Queue Model | Research Paper</title>
+<meta name="description" content="A client-grouped, leakage-checked model that ranks content pages by risk of losing search impressions next month, turned into a human-reviewed content action playbook. Built on the FlyRank ML Internship dataset.">
+<meta property="og:title" content="Which pages will lose search traffic next?">
+<meta property="og:description" content="Ranking 30,000 real content pages for review: honest validation, a ranked action playbook, and the limits.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="paper-assets/capstone_results_p50.png">
+<style>
+:root{--bg:#fbfaf7;--fg:#1d2328;--mute:#5d666e;--line:#e3e0d8;--card:#ffffff;--accent:#b33a3a;--accent2:#2f5d8a;--code:#f2efe8}
+@media (prefers-color-scheme:dark){:root{--bg:#14171a;--fg:#e7e9ea;--mute:#a1a8ae;--line:#2b3136;--card:#1b1f23;--accent:#e07a7a;--accent2:#86b2dc;--code:#22272c}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.65 Georgia,"Times New Roman",serif}
+.wrap{max-width:760px;margin:0 auto;padding:40px 16px 80px}
+header .kicker{font:600 12px/1.4 system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(28px,6vw,42px);line-height:1.15;margin:.3em 0 .4em;font-weight:700}
+.byline{font:14px/1.5 system-ui,sans-serif;color:var(--mute)}
+.byline a{color:inherit}
+h2{font:700 22px/1.3 system-ui,sans-serif;margin:2.4em 0 .6em;padding-top:.6em;border-top:1px solid var(--line)}
+h2 .n{color:var(--accent);margin-right:.4em}
+h3{font:600 17px/1.4 system-ui,sans-serif;margin:1.6em 0 .4em}
+p,li{margin:.6em 0}
+a{color:var(--accent2)}
+.abstract{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);padding:18px 20px;border-radius:6px;margin:28px 0}
+.abstract strong:first-child{font:700 12px system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:24px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.stat b{display:block;font:700 26px/1.1 system-ui,sans-serif}
+.stat span{display:block;margin-top:4px;font:13px/1.4 system-ui,sans-serif;color:var(--mute)}
+figure{margin:24px 0;background:#fff;border:1px solid var(--line);border-radius:6px;padding:10px}
+figure img{width:100%;height:auto;display:block}
+figcaption{font:14px/1.5 system-ui,sans-serif;color:#444;margin-top:8px}
+.tbl{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font:14px/1.4 system-ui,sans-serif}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:600;background:var(--code)}
+tr.hl td{font-weight:700}
+code{font:13px/1.4 ui-monospace,Menlo,Consolas,monospace;background:var(--code);padding:1px 5px;border-radius:4px}
+.note{font:14px/1.55 system-ui,sans-serif;color:var(--mute)}
+.callout{background:var(--code);border-radius:6px;padding:12px 16px;font:15px/1.55 system-ui,sans-serif}
+ol.recs>li{margin:.9em 0}
+nav.toc{font:14px/1.6 system-ui,sans-serif;columns:2;column-gap:24px;margin:16px 0 0}
+nav.toc a{color:var(--mute);text-decoration:none}
+nav.toc a:hover{color:var(--accent2)}
+footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font:13px/1.6 system-ui,sans-serif;color:var(--mute)}
+@media (max-width:520px){body{font-size:16px}nav.toc{columns:1}th,td{padding:6px 8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Research paper · FlyRank ML Internship capstone · 2026</div>
+  <h1>Which pages will lose search traffic next?</h1>
+  <div class="byline">Alessandro Kevin Aprilio · Machine Learning track · Lane: Search Traffic Decline Prediction ·
+    <a href="https://github.com/Epinnn14/Flyrank-ML-Intern">Repository</a></div>
+  <nav class="toc" aria-label="Contents">
+    <a href="#abstract">Abstract</a><br><a href="#intro">1. Problem</a><br><a href="#data">2. Data</a><br>
+    <a href="#method">3. Methodology</a><br><a href="#results">4. Results</a><br><a href="#limits">5. Limitations</a><br>
+    <a href="#recs">6. Ranked recommendations</a><br><a href="#repro">7. Reproducibility</a><br><a href="#credit">8. Acknowledgments &amp; data credit</a>
+  </nav>
+</header>
+
+<section class="abstract" id="abstract">
+  <strong>Abstract</strong>
+  Content teams can review only a few dozen pages a week, so they need to know which pages are about to lose search
+  visibility. Using 30,000 pseudonymized pages from 32 clients in the FlyRank ML Internship dataset, I trained models
+  that use only information available <em>before</em> a 30-day window to rank pages by risk of a &gt;20% drop in
+  impressions. Every page was validated on clients the model never saw. A logistic regression put about 42 real
+  decliners into a top-50 review list (precision@50&nbsp;=&nbsp;0.84 vs a 0.54 base rate), while the existing
+  stale-and-visible rule and a "falling pages keep falling" rule did no better than random. The output is a ranked,
+  reason-coded action playbook to order a human review queue. It is decision-support, not a forecast for any single
+  page, and it does not show that refreshing causes recovery.
+</section>
+
+<div class="stats">
+  <div class="stat"><b>30,000</b><span>pages, 32 clients, 90-day snapshot</span></div>
+  <div class="stat"><b>0.84</b><span>precision@50 on unseen clients (base rate 0.54)</span></div>
+  <div class="stat"><b>0.70</b><span>ROC AUC, logistic regression (5-fold, grouped)</span></div>
+  <div class="stat"><b>−0.10</b><span>AUC lost when a random split is replaced by a client split</span></div>
+</div>
+
+<h2 id="intro"><span class="n">1</span>Introduction / problem</h2>
+<p>Imagine a content editor on Monday morning: 30,000 pages across many client sites and roughly 50 review slots
+this week. Some pages are quietly losing visibility. Others had a bad week and will bounce back. Re-reading everything
+is impossible, and "refresh old content" doesn't say <em>which</em> pages.</p>
+<p>This work supports one decision: <strong>which ~50 pages to open first, and what kind of fix to consider</strong>
+(refresh, expand, rewrite the search snippet, consolidate, or leave alone). It turns that into a ranked queue with a
+plain-language reason for every page.</p>
+<p><strong>The FlyRank case.</strong> FlyRank produces and manages large AI-assisted content portfolios for many client sites
+at once, and its own research found that strong pages fade unless they are refreshed. The open question is <em>which</em>
+pages to refresh this month, across clients whose sites behave very differently. This paper answers it for one real,
+pseudonymized slice of that portfolio, and tests the answer on clients the model never saw.</p>
+<p class="note">Lane: Search Traffic Decline Prediction (closest predefined lane: Refresh / Content Opportunity Scoring).</p>
+
+<h2 id="data"><span class="n">2</span>Data</h2>
+<p><strong>Source.</strong> The FlyRank ML Internship starter dataset (<code>content_refresh_anonymized.csv</code>):
+30,000 pseudonymized content items from 32 pseudonymized clients, one trailing 90-day snapshot of Google Search Console
+and GA4 metrics, plus last-30-day and previous-30-day sub-windows. Most pages are keyword articles (27,207), followed by
+feedly articles (2,096) and comparison articles (697). Client sizes range from 3 to 7,008 pages.</p>
+<p><strong>Inclusion rules.</strong> Pages with at least one impression in 90 days and at least 90 days old, de-duplicated by
+content id. No rows depend on what happened in the outcome window.</p>
+<p><strong>Not used.</strong> Client and content ids (used only for grouping), the label sources (<code>trend_direction</code>,
+<code>trend_pct</code>), generator metadata, and every column whose time window overlaps the label.</p>
+<p class="note">Public-safe: the data contains no client names, domains, URLs or search queries, and neither does this page.
+All findings are scoped to this slice, not the full 79M-row warehouse.</p>
+
+<h2 id="method"><span class="n">3</span>Methodology</h2>
+<h3>Label</h3>
+<p>A page is <em>declining</em> when its impressions in the last 30 days fell by more than 20% compared with the 30 days
+before. 54.2% of pages meet that bar. The label measures momentum, not overall page quality.</p>
+<h3>Features: only what was known before the window</h3>
+<p>The label compares days 1–30 back with days 31–60 back, so a useful prediction has to be made <em>before</em> days 1–30
+happen. Every feature therefore comes from days 31–90 back: previous-30 and first-30 impressions, clicks and sessions
+(the first-30 window is derived as <code>90d − last30 − prev30</code>), early momentum between those two windows, content
+age at the prediction moment, word count, keyword volume/competition/CPC with missing-value flags, content type and
+intent.</p>
+<p>I dropped all 90-day totals and rates (they contain the label window) and "days since last update" (68% of pages were
+updated <em>inside</em> the label window, so it carries future information).</p>
+<h3>Baselines and models</h3>
+<p>Three baselines on the same split: <strong>random order</strong>, the <strong>Week-4 rule</strong>
+(0.5·staleness + 0.3·visibility + 0.2·position opportunity) and a <strong>momentum rule</strong> ("pages already falling keep
+falling"). Models: logistic regression and a random forest (300 trees, depth ≤ 12).</p>
+<h3>Validation and leakage checks</h3>
+<p>Five-fold cross-validation <strong>grouped by client</strong>: whole clients are held out, so every number answers
+"does this work on a client the model has never seen?" The base rate is reported next to every metric.</p>
+<figure>
+  <img src="paper-assets/w06_split_before_after.png" alt="Bar chart: ROC AUC 0.77 under a random row split versus 0.67 under a client-grouped split, same model and features" loading="lazy" width="1050" height="600">
+  <figcaption>The same model looks about 0.10 AUC better under a random row split. Under that split, pages from one
+  client sit in both training and test data, so the model partly memorizes the client.</figcaption>
+</figure>
+<div class="callout">Leakage checks: (1) adding the label source <code>trend_pct</code> on purpose pushes AUC to 1.00, so the
+test harness catches leaks; (2) the window-aligned features score about the same as the overlapping ones
+(0.685 vs 0.668), so the honest feature set costs nothing; (3) ids are never features.</div>
+
+<h2 id="results"><span class="n">4</span>Results</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Method (5-fold, unseen clients)</th><th>ROC AUC</th><th>Avg precision</th><th>Precision@50</th><th>Precision@100</th></tr></thead>
+  <tbody>
+    <tr><td>Random order</td><td>0.51</td><td>0.55</td><td>0.50</td><td>0.52</td></tr>
+    <tr><td>Week-4 rule</td><td>0.50</td><td>0.55</td><td>0.44</td><td>0.44</td></tr>
+    <tr><td>Momentum rule</td><td>0.48</td><td>0.52</td><td>0.19</td><td>0.28</td></tr>
+    <tr class="hl"><td>Logistic regression</td><td>0.70</td><td>0.70</td><td>0.84</td><td>0.82</td></tr>
+    <tr><td>Random forest</td><td>0.69</td><td>0.68</td><td>0.65</td><td>0.68</td></tr>
+  </tbody>
+</table></div>
+<p class="note">Base rate 0.544 (0.38–0.65 depending on which clients are held out).</p>
+<figure>
+  <img src="paper-assets/capstone_results_p50.png" alt="Bar chart of precision at 50: random 0.50, Week-4 rule 0.44, momentum rule 0.19, logistic regression 0.84, random forest 0.65" loading="lazy" width="1125" height="570">
+  <figcaption>Out of every 50 pages the method puts first, how many actually declined. Logistic regression gets about 42,
+  random order about 27.</figcaption>
+</figure>
+<p><strong>The obvious rules failed on this label.</strong> The Week-4 rule finds stale-but-visible pages, a useful
+editorial signal for a <em>different</em> question. The momentum rule is worse than random: pages that fell in the earlier
+window tended to bounce back (mean reversion) rather than keep falling.</p>
+<p><strong>The simpler model won at the top of the list.</strong> Logistic regression beat the forest on precision@50 in all
+five folds (0.74–0.92 vs 0.36–0.76), with similar AUC.</p>
+<figure>
+  <img src="paper-assets/capstone_auc_by_fold.png" alt="Line chart of ROC AUC per held-out fold for each method; models range about 0.59 to 0.78, rules around 0.5" loading="lazy" width="1125" height="540">
+  <figcaption>Results depend on which clients are held out. The spread is part of the result, not noise to hide.</figcaption>
+</figure>
+<p>An AUC near 0.70 is useful for <em>ordering</em> a review queue and weak for judging any single page.</p>
+
+<h2 id="limits"><span class="n">5</span>Limitations &amp; honest framing</h2>
+<ul>
+  <li><strong>Observational, one snapshot.</strong> Pages updated recently declined less often (51% vs 61%), but editors
+  chose which pages to update. Nothing here shows that refreshing <em>causes</em> recovery.</li>
+  <li><strong>Starter slice.</strong> 30k pages from 32 clients, with about 6 held-out clients per fold. A new client could land
+  anywhere in the fold range.</li>
+  <li><strong>Short, noisy label.</strong> A 20% swing over 30 days can come from seasonality, tracking changes or a
+  search-engine update.</li>
+  <li><strong>Age as a cohort marker.</strong> Pages were published in batches, so content age partly encodes "which batch".</li>
+  <li><strong>Missing data.</strong> 26% of pages lack word count and 8% lack keyword data.</li>
+  <li><strong>No live outcome yet.</strong> The forward-looking queue has not been checked against the following month.</li>
+  <li><strong>Not a model of Google.</strong> These are outcomes inside one portfolio, not a statement about how search ranking works.</li>
+</ul>
+<figure>
+  <img src="paper-assets/w07_decay_by_age.png" alt="Bar chart: share of pages declining by age, 63% at 90-180 days falling to 42% at 366-540 days" loading="lazy" width="1050" height="570">
+  <figcaption>Observed in this slice: younger pages swing down more often on a 30-day momentum label. This differs from
+  age curves built on composite health scores and is not a causal ageing effect.</figcaption>
+</figure>
+
+<h2 id="recs"><span class="n">6</span>Ranked recommendations (the action playbook)</h2>
+<p>Each page gets a forward-looking risk score (the model applied one window ahead), transparent reason codes, and one
+action. Within an action tier, pages are ordered by risk × value at stake (recent clicks and impressions).</p>
+<ol class="recs">
+  <li><strong>Refresh now (~4,100 pages)</strong>: high risk and still ≥ 300 impressions a month. Update facts and
+  examples, add missing subtopics, and expand pages under 2,000 words. Check impressions, clicks and position after 30 and 60 days.</li>
+  <li><strong>Rewrite title &amp; meta (~2,200)</strong>: ranking on pages 1–2 but CTR below its tier median. This is a snippet
+  problem, not a content problem.</li>
+  <li><strong>Light refresh or monitor (~1,400)</strong>: risky but little demand. Small fixes only.</li>
+  <li><strong>Consolidate / prune review (~850)</strong>: under 10 impressions a month and over a year old. Human decision only.</li>
+  <li><strong>Protect (~6,700) and monitor (~14,700)</strong>: leave alone and watch the retrain triggers.</li>
+</ol>
+<figure>
+  <img src="paper-assets/w07_action_mix.png" alt="Horizontal bar chart of recommended actions across 30,000 pages" loading="lazy" width="1050" height="570">
+  <figcaption>Most pages need no action this cycle. The queue focuses editor time on roughly a fifth of the portfolio.</figcaption>
+</figure>
+<h3>Top of the queue (public-safe, no identifiers)</h3>
+<div class="tbl"><table>
+  <thead><tr><th>Rank</th><th>Risk</th><th>Impr. 30d</th><th>Clicks 30d</th><th>Age (d)</th><th>Words</th><th>Reasons</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>0.95</td><td>212,015</td><td>8</td><td>98</td><td>3,530</td><td>high risk · demand</td></tr>
+    <tr><td>2</td><td>0.94</td><td>122,303</td><td>10</td><td>148</td><td>4,939</td><td>high risk · demand</td></tr>
+    <tr><td>3</td><td>0.97</td><td>63,326</td><td>0</td><td>362</td><td>–</td><td>high risk · slipping · demand · decay age · snippet</td></tr>
+    <tr><td>4</td><td>0.81</td><td>106,985</td><td>35</td><td>144</td><td>–</td><td>high risk · demand · snippet</td></tr>
+    <tr><td>5</td><td>0.92</td><td>37,677</td><td>1</td><td>97</td><td>2,810</td><td>high risk · slipping · demand · snippet</td></tr>
+    <tr><td>6</td><td>0.90</td><td>43,343</td><td>3</td><td>299</td><td>7,295</td><td>high risk · demand · decay age</td></tr>
+    <tr><td>7</td><td>0.86</td><td>51,115</td><td>9</td><td>313</td><td>–</td><td>high risk · demand · decay age · snippet</td></tr>
+    <tr><td>8</td><td>0.85</td><td>38,658</td><td>13</td><td>153</td><td>–</td><td>high risk · slipping · demand · snippet</td></tr>
+  </tbody>
+</table></div>
+<p class="note">A pattern worth a human look: many top pages earn tens of thousands of impressions but almost no clicks.
+They are visible but not chosen, which points to intent mismatch or weak snippets as much as freshness.</p>
+<div class="callout"><strong>Never automate:</strong> deleting, merging, redirecting or no-indexing pages; publishing AI-drafted
+rewrites without an editor; changing titles on top-traffic pages without checking the live search result. Every batch starts
+with a two-minute human check per page.<br><br>
+<strong>Retrain / pause when:</strong> last month's queue scores below base rate + 0.05 for two months; the decline share
+moves more than 10 points; traffic features drift (PSI &gt; 0.25); a new client arrives; or a core update or tracking change happens.</div>
+
+<h2 id="repro"><span class="n">7</span>Reproducibility</h2>
+<p>Everything runs from the public repo with the seed fixed at 42. Open any notebook in Colab or run it locally top to bottom:</p>
+<ul>
+  <li><a href="https://github.com/Epinnn14/Flyrank-ML-Intern/blob/main/work/notebooks/capstone.ipynb">capstone.ipynb</a>: question, data, method, results, limits and recommendations (mirrors this page)</li>
+  <li><a href="https://github.com/Epinnn14/Flyrank-ML-Intern/blob/main/work/notebooks/w06_validation_audit.ipynb">w06_validation_audit.ipynb</a>: split before/after, leakage audit, claim rewrite</li>
+  <li><a href="https://github.com/Epinnn14/Flyrank-ML-Intern/blob/main/work/notebooks/w07_action_playbook.ipynb">w07_action_playbook.ipynb</a>: queue, reason codes, human review rules, triggers (regenerates the queue CSV)</li>
+  <li><a href="https://github.com/Epinnn14/Flyrank-ML-Intern/blob/main/work/notebooks/w05_model.ipynb">w05_model.ipynb</a>: first model comparison (Week 5)</li>
+  <li>Metric receipts: <code>work/outputs/capstone_metrics.json</code>, <code>w06_validation_metrics.json</code>, <code>w07_playbook_metrics.json</code></li>
+</ul>
+<p class="note">How AI was used: I worked with an AI assistant (Claude) to draft notebook code and this page. I checked the
+validation design, leakage tests and every number against the executed notebooks.</p>
+
+<h2 id="credit"><span class="n">8</span>Acknowledgments &amp; data credit</h2>
+<p>Built on the <a href="https://flyrank.ai">FlyRank ML Internship dataset</a>. Thanks to the FlyRank team and the ML track
+mentors for the data, the starter pipeline, and the weekly sessions on validation and honest claims. The study design also
+drew on FlyRank's public report <em>The State of AI-Driven SEO in Numbers</em> (March 2026).</p>
+
+<footer>© 2026 Alessandro Kevin Aprilio · Educational research project, FlyRank AI Internship · Data: pseudonymized, public-safe slice.</footer>
+</div>
+</body>
+</html>

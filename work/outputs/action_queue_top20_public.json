@@ -1,0 +1,222 @@
+[
+ {
+  "rank":1,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.948,
+  "impressions_last_30d":212015,
+  "clicks_last_30d":8,
+  "content_age_days":98,
+  "word_count":3530.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there"
+ },
+ {
+  "rank":2,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.939,
+  "impressions_last_30d":122303,
+  "clicks_last_30d":10,
+  "content_age_days":148,
+  "word_count":4939.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there"
+ },
+ {
+  "rank":3,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.973,
+  "impressions_last_30d":63326,
+  "clicks_last_30d":0,
+  "content_age_days":362,
+  "word_count":null,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|already_slipping|demand_still_there|decay_age_zone|snippet_underperforms"
+ },
+ {
+  "rank":4,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.813,
+  "impressions_last_30d":106985,
+  "clicks_last_30d":35,
+  "content_age_days":144,
+  "word_count":null,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there|snippet_underperforms"
+ },
+ {
+  "rank":5,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.924,
+  "impressions_last_30d":37677,
+  "clicks_last_30d":1,
+  "content_age_days":97,
+  "word_count":2810.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|already_slipping|demand_still_there|snippet_underperforms"
+ },
+ {
+  "rank":6,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.899,
+  "impressions_last_30d":43343,
+  "clicks_last_30d":3,
+  "content_age_days":299,
+  "word_count":7295.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there|decay_age_zone"
+ },
+ {
+  "rank":7,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.856,
+  "impressions_last_30d":51115,
+  "clicks_last_30d":9,
+  "content_age_days":313,
+  "word_count":null,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there|decay_age_zone|snippet_underperforms"
+ },
+ {
+  "rank":8,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.852,
+  "impressions_last_30d":38658,
+  "clicks_last_30d":13,
+  "content_age_days":153,
+  "word_count":null,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|already_slipping|demand_still_there|snippet_underperforms"
+ },
+ {
+  "rank":9,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.805,
+  "impressions_last_30d":55948,
+  "clicks_last_30d":32,
+  "content_age_days":148,
+  "word_count":null,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there|snippet_underperforms"
+ },
+ {
+  "rank":10,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.928,
+  "impressions_last_30d":20711,
+  "clicks_last_30d":2,
+  "content_age_days":124,
+  "word_count":3084.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there|snippet_underperforms"
+ },
+ {
+  "rank":11,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.938,
+  "impressions_last_30d":19341,
+  "clicks_last_30d":1,
+  "content_age_days":139,
+  "word_count":5359.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there|snippet_underperforms"
+ },
+ {
+  "rank":12,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.742,
+  "impressions_last_30d":99337,
+  "clicks_last_30d":36,
+  "content_age_days":95,
+  "word_count":2871.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there|snippet_underperforms"
+ },
+ {
+  "rank":13,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.945,
+  "impressions_last_30d":16492,
+  "clicks_last_30d":1,
+  "content_age_days":95,
+  "word_count":3103.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there"
+ },
+ {
+  "rank":14,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.883,
+  "impressions_last_30d":23684,
+  "clicks_last_30d":6,
+  "content_age_days":148,
+  "word_count":4540.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there"
+ },
+ {
+  "rank":15,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.903,
+  "impressions_last_30d":19455,
+  "clicks_last_30d":2,
+  "content_age_days":106,
+  "word_count":2901.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there|snippet_underperforms"
+ },
+ {
+  "rank":16,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.917,
+  "impressions_last_30d":17485,
+  "clicks_last_30d":1,
+  "content_age_days":147,
+  "word_count":2916.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|already_slipping|demand_still_there|snippet_underperforms"
+ },
+ {
+  "rank":17,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.876,
+  "impressions_last_30d":22631,
+  "clicks_last_30d":1,
+  "content_age_days":286,
+  "word_count":5813.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|already_slipping|demand_still_there|decay_age_zone"
+ },
+ {
+  "rank":18,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.842,
+  "impressions_last_30d":24741,
+  "clicks_last_30d":28,
+  "content_age_days":229,
+  "word_count":5146.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there"
+ },
+ {
+  "rank":19,
+  "archetype_action":"refresh_now",
+  "risk_next30":0.89,
+  "impressions_last_30d":18137,
+  "clicks_last_30d":5,
+  "content_age_days":148,
+  "word_count":null,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|already_slipping|demand_still_there|snippet_underperforms"
+ },
+ {
+  "rank":20,
+  "archetype_action":"expand_and_refresh",
+  "risk_next30":0.944,
+  "impressions_last_30d":12985,
+  "clicks_last_30d":0,
+  "content_age_days":237,
+  "word_count":1329.0,
+  "content_type":"keyword article",
+  "reason_codes":"high_model_risk|demand_still_there|thin_page"
+ }
+]
